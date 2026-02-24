@@ -1,10 +1,10 @@
 .POSIX:
 
-.SUFFIXES:
+.SUFFIXES: .c .o .out .chk
 
 LDLIBS=-lm
 
-.PHONY=all clean
+.PHONY=all clean check
 
 SRC=src/swt.c src/find_seamounts.c
 OBJ=$(SRC:.c=.o)
@@ -17,10 +17,23 @@ swt: src/swt.o
 find_seamounts: src/find_seamounts.o
 	$(CC) $(LDFLAGS) -o $@ $? $(LDLIBS)
 
-.SUFFIXES: .c .o
-
 .c.o: 
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Testing
+
+TEST=test/block.txt test/coeffcomb.txt test/coeffint.txt test/coeffraw.txt test/count.txt test/wavfilt.txt
+
+TESTOUT=$(TEST:.txt=.out)
+TESTCHK=$(TEST:.txt=.chk)
+
+check: $(TESTCHK)
+
+$(TESTOUT): swt test/input.txt
+	./swt test/input.txt test/coeffraw.out test/coeffint.out test/wavfilt.out test/coeffcomb.out test/block.out test/count.out > test/output.txt
+
+.out.chk:
+	diff $*.txt $<
+
 clean:
-	rm -f swt find_seamounts $(OBJ)
+	rm -f swt find_seamounts $(OBJ) $(TESTOUT) look.temp lookB.temp
