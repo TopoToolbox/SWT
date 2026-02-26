@@ -1,6 +1,6 @@
 # SWT
 
-The Spatial Wavelet Transform of J. K. Hillier (2008) Seamount detection and isolation with a modified wavelet transform. /Basin Research/ 20, 555-573. https://doi.org/10.1111/j.1365-2117.2008.00382.x
+The Spatial Wavelet Transform of J. K. Hillier (2008) Seamount detection and isolation with a modified wavelet transform. *Basin Research* 20, 555-573. https://doi.org/10.1111/j.1365-2117.2008.00382.x
 
 ## Compilation
 
