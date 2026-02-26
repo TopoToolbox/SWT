@@ -1,0 +1,5 @@
+src/*.o
+test/*.out
+*.temp
+swt
+find_seamounts
