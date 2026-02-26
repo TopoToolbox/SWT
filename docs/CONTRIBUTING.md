@@ -111,5 +111,29 @@ where `<newbranchname>` is the name of the branch you created before. Use `git s
 
 This will create the branch on GitHub if it doesn't already exist and add your commits to the branch. You can keep making changes, committing and pushing after you've pushed a branch to GitHub. There are ways to delete commits that you have pushed, but they are somewhat advanced techniques. If you made a mistake and pushed a commit that you didn't want to, the easiest way to fix it is to make a new commit undoing the change and push it on top. If you really don't want that commit to be public (because it has sensitive information, for example), get in touch with Will who will help you fix it.
 
-Now your fork has your changes. You'll propose that the changes be included in the TopoToolbox/SWT repository by making a "Pull Request" on GitHub. Go to [TopoToolbox/SWT](https://github.com/TopoToolbox/SWT). If you pushed your changes recently, GitHub will display a yellow banner that says your branch had recent pushes and give you the option to "Compare & pull request." Click on that to create a new pull request. If it has been a while since you pushed, you can go to the Pull requests tab of the repository and click "New pull request."
+Now your fork has your changes. You'll propose that the changes be included in the TopoToolbox/SWT repository by making a "Pull Request" (PR) on GitHub. Go to [TopoToolbox/SWT](https://github.com/TopoToolbox/SWT). If you pushed your changes recently, GitHub will display a yellow banner that says your branch had recent pushes and give you the option to "Compare & pull request." Click on that to create a new pull request. If it has been a while since you pushed, you can go to the Pull requests tab of the repository and click "New pull request."
+
+Give your pull request a title and a description. If your PR has only one commit, these will be prefilled for you from the commit message. Click "Create pull request" when you are done. The maintainers will be notified and will review and discuss your changes in the comments of the pull request. If they suggest that you should make some more changes, you can make the changes on your machine, commit and push and they will show up in the pull request. When they are satisfied with the changes, they will "merge" the changes into the `TopoToolbox/SWT#main` branch.
+
+## Keeping track of changes
+
+As development progresses, many different people may make changes to the code simultaneously. These will all be filtered through pull requests to the `main` branch of TopoToolbox/SWT. You probably want to get the most recent version of the main branch to make your next changes. To integrate changes from a remote back into your local copy, you will "pull" those changes from the remote.
+
+However, since you cloned your fork, not the TopoToolbox/SWT repository, you will need to first add a new remote pointing at the TopoToolbox version. Use
+
+```
+git remote add upstream git@github.com:TopoToolbox/SWT.git
+```
+
+to add a remote called `upstream` pointing to the URL. You can use the HTTPS URL here as well, just like when you cloned. `upstream` is traditional, but the remote can be named anything you like. Now switch back to your main branch locally
+
+```
+git checkout main
+```
+
+and pull the changes from `upstream`: 
+
+```
+git pull upstream main
+```
 
