@@ -101,9 +101,15 @@ Once you are happy with the changes you've made, run the tests once more to make
 make check
 ```
 
-Now you are ready to "push" the changes back to your fork. This sends the changes from your local computer to GitHub, but does not merge them into the TopoToolbox/SWT repository yet. You can only push to a repository that you have access to. If you try to push to TopoToolbox/SWT, GitHub will refuse to allow it and Git will fail with an error message.
+Now you are ready to "push" the changes back to your fork. This sends the changes from your local computer to GitHub, but does not merge them into the TopoToolbox/SWT repository yet. You can only push to a repository that you have access to. If you try to push to TopoToolbox/SWT, GitHub will refuse to allow it and Git will fail with an error message. A remote repository is called a "remote". Each remote has a name and a URL. If you cloned your GitHub fork as described above, Git will automatically create a remote with the name `origin` and a URL pointing to your fork. Push the changes on your feature branch using
 
 ```
-git push origin
+git push origin <newbranchname>
 ```
+
+where `<newbranchname>` is the name of the branch you created before. Use `git status` if you have forgotten what you called it.
+
+This will create the branch on GitHub if it doesn't already exist and add your commits to the branch. You can keep making changes, committing and pushing after you've pushed a branch to GitHub. There are ways to delete commits that you have pushed, but they are somewhat advanced techniques. If you made a mistake and pushed a commit that you didn't want to, the easiest way to fix it is to make a new commit undoing the change and push it on top. If you really don't want that commit to be public (because it has sensitive information, for example), get in touch with Will who will help you fix it.
+
+Now your fork has your changes. You'll propose that the changes be included in the TopoToolbox/SWT repository by making a "Pull Request" on GitHub. Go to [TopoToolbox/SWT](https://github.com/TopoToolbox/SWT). If you pushed your changes recently, GitHub will display a yellow banner that says your branch had recent pushes and give you the option to "Compare & pull request." Click on that to create a new pull request. If it has been a while since you pushed, you can go to the Pull requests tab of the repository and click "New pull request."
 
