@@ -137,3 +137,7 @@ and pull the changes from `upstream`:
 git pull upstream main
 ```
 
+This will merge all the changes from `upstream` into your local `main` branch. This is why it is a good idea to make changes on a new feature branch. You can keep the local `main` synchronized with `upstream` even if you have made changes to your feature branches.
+
+Add some point, you might need to incorporate changes from `upstream` into a feature branch, such as when someone has made changes that conflict with the code you are working on. This requires "merging" or "rebasing" the `main` branch and your feature branch. This is more complicated and if you need to do it, Will can give you more details.
+
