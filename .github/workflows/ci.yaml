@@ -10,6 +10,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Build SWT
-        run: make
+        run: CFLAGS="-Werror -Wall -Wextra -Wpedantic -Wno-unused-parameter" make
       - name: Run tests
-        run: make check          
+        run: make check
