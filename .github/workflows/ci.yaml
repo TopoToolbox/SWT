@@ -12,4 +12,4 @@ jobs:
       - name: Build SWT
         run: CFLAGS="-Werror -Wall -Wextra -Wpedantic -Wno-unused-parameter" make
       - name: Run tests
-        run: make check
+        run: make -k check
