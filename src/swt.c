@@ -916,7 +916,7 @@ int ReadData (char *argv[], float distance[], float depth[], float longitude[], 
 	while ((len = getlineJH(line, fdata)) > 0)
 		{
 /*Reads 2 columns distance along track and depth*/
-		sscanf(line, "%f %f", &column1, &column2);
+                  sscanf(line, "%f %f %f %f", &column1, &column2, &column3, &column4);
 /* x,z in meters*/
 /*printf("In main while,%f %f\n", column1, column2);*/
 		distance[countlines] = column1;
