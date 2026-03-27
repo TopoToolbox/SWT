@@ -1,5 +1,5 @@
 /*SWT Interpretation Algorithm: Scale invariant filtering of bathymetry data*/
-/*Last Altered:21/08/2008  -  John Hillier*/
+/*Last Altered:17/03/2026  -  John Hillier*/
 
 /*COMMAND LINE*/
 /*SWT.out
@@ -41,7 +41,7 @@ int wavelet(float distance[], float depth[], char *argv[], int numberlines);
 
 
 /*MAIN*/
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	float distance[MAXCOLUMNS];
 	float depth[MAXCOLUMNS];
@@ -167,13 +167,13 @@ int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[]
 int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
 
 {
-  int a,b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
+  int b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
   float gradient;		/*used in the linear interpolation of the space under objects*/
   float area, outline;          /*properties of the feature*/
   float extradist, extraarea;
-  float ratio, ratiomax;        /*ratio: outline length / Area */
+  float ratio;        /*ratio: outline length / Area */
   float depthInterpL, depthInterpR;    /*interpolated depths used in calculations*/
-  float maxratio, maxratioOld;         /*'success parameters' driving the routine*/
+  float maxratio;         /*'success parameters' driving the routine*/
   int moveL, moveR;           /*number of data points to the left to try to shift the left hand edge*/
   int loopleft, loopright;        /*loop logical variable*/
   int mainloop, changes;          /*logic variable for the main loop and number of changes*/
@@ -922,6 +922,10 @@ int ReadData (char *argv[], float distance[], float depth[], float longitude[], 
 		distance[countlines] = column1;
 		depth[countlines] = column2;
 		/*printf("%f %f %d\n",  distance[countlines], depth[countlines],countlines);*/
+		longitude[countlines] = column3;
+		latitude[countlines] = column4;
+		/*Read these in, although they're not used anywhere*/
+		/*Saves removing them from a lot of places*/
 		countlines++;
 		}
 
@@ -958,7 +962,7 @@ int wavelet(float distance[], float depth[], char *argv[], int numberlines)
 
 
 	float scale;			/*scale currently being opperated at*/
-	int i, j, k, l, m, n, p, q, r;			/*loop variable*/
+	int i, j, l, p, r;			/*loop variable*/
 	float CoeffThreshold;		/*Detection threshold for objects - same for all scales*/
 	float maxscale;			/*max scale upon which to search*/
 	float NumFeatures;               /*final output of number of features found*/
@@ -1410,7 +1414,7 @@ int wavInterpComb(float WavComb[], int numberlines, float WavFilt[], float depth
   float gradient;		/*used in the linear interpolation of the space under objects*/
   float area, outline;          /*properties of the feature*/
   float extradist, extraarea;
-  float ratio, ratiomax;        /*ratio: outline length / Area */
+  float ratio;        /*ratio: outline length / Area */
   float depthInterpL, depthInterpR;    /*interpolated depths used in calculations*/
   int countobjects;
 
@@ -1561,7 +1565,7 @@ int wavInterpComb(float WavComb[], int numberlines, float WavFilt[], float depth
 int wavInterpCombii(char *argv[], float WavComb[], int numberlines, float distance[], float WavCombScale[], float ScaleInteract)
 
 {
-  int a,b,c,d,e,f,g, h;		/*loop variables*/
+  int a,b,c,d,e;		/*loop variables*/
   int len;
   int linenum;
   char line[MAXLINE];
@@ -1571,10 +1575,9 @@ int wavInterpCombii(char *argv[], float WavComb[], int numberlines, float distan
   float Arr2[MAXCOLUMNS];
   float Arr3[MAXCOLUMNS];
   float distdiff;           /*distance between 2 coefficients*/
-  int PSFlogic, Rlogic;     /*whether or not the scales interract*/
-  float PairScaleFactor;    /*difference in the scales between 2 coefficients*/
+  int Rlogic;     /*whether or not the scales interract*/
+  /*difference in the scales between 2 coefficients now in as ScaleInteract*/
   float PairFlatnessFactor;
-  float percent;
   FILE *fouttemp;
   FILE *fouttempB;
   float FlatnessFactor;      /*factor to determine what is too flat*/
