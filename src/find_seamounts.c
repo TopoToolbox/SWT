@@ -106,11 +106,6 @@ int main(int argc, char *argv[])
 
 /*Finding the seamount objects and their properties*/
 	(object(argc, argv, numberlines, distance, depth, filtered, longitude, latitude, startDist, endDist, startEl, endEl, numberpoints));
-	/*printf("After Object\n");*/
-	
-/*Output*/
-	/*output(start, end, numberpoints, questionA, questionB, questionC, questionD, questionE, questionF, questionG, questionRA, questionRB, questionRC, questionRD,  argv, totalObjectnumber);*/
-
 }
 
 
