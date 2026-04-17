@@ -94,7 +94,6 @@ int main(int argc, char *argv[])
 	/*float questionA[MAXOBJECTS] = {0.0};*/
 /*numbers required by functions*/
 	int numberlines;				/*rows of input data*/
-	int totalObjectnumber;
 
 /*As the files are opened for append later, must remove them now*/
 	cleanfiles(argc, argv);
@@ -106,12 +105,7 @@ int main(int argc, char *argv[])
 	/*printf("Number of lines = %d\n", numberlines);*/
 
 /*Finding the seamount objects and their properties*/
-	totalObjectnumber = (object(argc, argv, numberlines, distance, depth, filtered, longitude, latitude, startDist, endDist, startEl, endEl, numberpoints));
-	/*printf("After Object\n");*/
-	
-/*Output*/
-	/*output(start, end, numberpoints, questionA, questionB, questionC, questionD, questionE, questionF, questionG, questionRA, questionRB, questionRC, questionRD,  argv, totalObjectnumber);*/
-
+	(object(argc, argv, numberlines, distance, depth, filtered, longitude, latitude, startDist, endDist, startEl, endEl, numberpoints));
 }
 
 
@@ -124,8 +118,6 @@ int main(int argc, char *argv[])
 int cleanfiles(int argc, char *argv[])
 
 {
-	int a, b;				/*loop variables*/
-	int Display;				/*Variable to say if producing display output file*/
 	char CommandPatterni;			/*variables for the command line grab*/
 	char CommandPatternii;
 	char *ReturnedPointer;			/*Pointer to string*/
@@ -227,7 +219,6 @@ int DoMisfitFunction(int argc, char *argv[], int f, int g, float MoveLocnX[MVLOC
 	int todo;				/*Variable indicating if misfit is to be done
 						if == 1 then do, if == 0 then don't do*/
 	int t;
-	float Gradient;				/*Gradient of the baseline from 1st data point*/
 	float BaselineHeight;			/*Height of the baseline under point*/
 
 	/*Default is to do*/
@@ -394,7 +385,6 @@ int findchunk(float distance[], float depth[], float filtered[], int start, int 
 
 {
 	int end, search;
-	int test;
 	int found;
 
 	found = 0;
@@ -437,10 +427,10 @@ int findchunk(float distance[], float depth[], float filtered[], int start, int 
 int frustum(float distance[], float depth[], float FracDist[], float FracDepth[], float filtered[], float longitude[], float latitude[], int begin, int finish,int argc, char *argv[], int objectnumber)
 
 {
-	int b,c,d,point,e,f,g,h,i,j,k,l,m;	/*Loop variables*/
-	int o,p,q,r,s,t,u,v,w,x;				/*Loop variables*/
+	int b,c,d,point,e,f,g,j,k,l,m;	/*Loop variables*/
+	int s,t,u,v,w,x;				/*Loop variables*/
 	float MinDepth, MaxDepth;		/*Depth to top and bottom of object respectively*/
-	int MinDepthLocn, MaxDepthLocn;		/*locations in array of the above*/
+	int MinDepthLocn;		/*locations in array of the above*/
 /*Location of the 4 points describing the frustum*/
 /*points are 0= bottom left, 1= top left, 2 = top right, 3 = bottom right*/
 /*x and y are standard cartesian , origin bottom left*/
@@ -488,13 +478,11 @@ int frustum(float distance[], float depth[], float FracDist[], float FracDepth[]
 	MinDepth = -100000.0;
 	MaxDepth = 100000.0;
 	MinDepthLocn = -1;	/*cos don't have -ve array elements*/
-	MaxDepthLocn = -1;
 	for(b = begin; b <= finish; b++)
 		{
 		if(depth[b] < MaxDepth)
 			{
 			MaxDepth = depth[b];
-			MaxDepthLocn = b;
 			}
 		if(depth[b] > MinDepth)
 			{
@@ -874,8 +862,7 @@ float MisfitFunctionII(float PointX[], float PointY[], float FracDist[], float F
 	float BaselineFracDepth;		/*as the data line*/
 	float BaseIncX, BaseIncY;		/*Increments in X and Y for baseline resampling*/
 	float theta;				/*Angle of the baseline*/
-	float CountBase;			/*number of points along baseline*/
-	float betweenpercent, test, acrossA, acrossB;
+	float betweenpercent, acrossA, acrossB;
 
 
 	/*printf("0 = (%f,%f)  1= (%f,%f) 2= (%f,%f) 3= (%f,%f)\n", PointX[0], PointY[0], PointX[1], PointY[1], PointX[2], PointY[2], PointX[3], PointY[3]);*/
@@ -1145,18 +1132,13 @@ but that shouldn't matter too much*/
 int output(float distance[],float depth[],float longitude[], float latitude[], int begin,int finish,float PointX[],float  PointY[], float MinDepth, float MaxDepth,int argc, char *argv[], int objectnumber, int MinDepthLocn, float MISFIT, float FracDist[], float FracDepth[])
 
 {
-	int a, b, c, d, e, f,g,h;		/*loop variables*/
+	int a, b, c, d, e, f;		/*loop variables*/
 	int i,j;				/*loop variable*/
 	float PointDist[4], PointDepth[4];	/*frustum conrners in the real world of d,t*/
 	char CommandPatterni;			/*variables for the command line grab*/
 	char CommandPatternii;
 	char *ReturnedPointer;			/*Pointer to string*/
 	int foundArg;				/*Says if command line argument been sucessful*/
-	float AvRadiusTop, AvRadiusBottom;	/*Dist (km) from the centre to the edges of the top
-						and bottom of the frustum*/
-	float AvHeight;				/*Av height (m) between the top and bottom 2 corners of the frustum*/
-	float AvSlope;				/*Av slope of the sides of the frustum*/
-	float Tilt;				/*Tilt of the top of the frustum (degrees)*/
 	float BaseRadius, TopRadius;		/*as it says*/
 	float SlopeRHS, SlopeLHS, Slope;	/*Slopes of the sides of the approximated cone*/
 	float up,across, upB, acrossB;
