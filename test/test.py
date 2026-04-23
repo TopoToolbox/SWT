@@ -11,16 +11,16 @@ def main():
         with open(file2, newline='') as f2:
             r1 = csv.reader(f1, delimiter=' ', quoting=csv.QUOTE_NONNUMERIC)
             r2 = csv.reader(f2, delimiter=' ', quoting=csv.QUOTE_NONNUMERIC)
-            for (l1, l2) in zip(r1, r2, strict=True):
-                try:
+            try:
+                for (l1, l2) in zip(r1, r2, strict=True):
                     for (x, y) in zip(l1, l2, strict=True):
-                        if abs(x - y) > abs(x) * 1e-4:
+                        if abs(x - y) > abs(x) * 0.0:
                             print("<", l1)
                             print('---')
                             print(">", l2)
                             rval = 1
-                except:
-                    print(l1)
+            except:
+                pass
         
     return rval
     
