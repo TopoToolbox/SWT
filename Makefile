@@ -37,7 +37,7 @@ $(TESTOUT): swt find_seamounts test/input.txt test/seamount_input.txt
 # suffix. Instead we use it to trigger this rule that compares the
 # stored output ($*.txt) with the generated output ($<).
 .out.chk:
-	diff $*.txt $<
+	python3 test/test.py $*.txt $<
 
 clean:
 	rm -f swt find_seamounts $(OBJ) $(TESTOUT) look.temp lookB.temp
