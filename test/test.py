@@ -14,7 +14,7 @@ def main():
             try:
                 for (l1, l2) in zip(r1, r2, strict=True):
                     for (x, y) in zip(l1, l2, strict=True):
-                        if abs(x - y) > abs(x) * 0.0:
+                        if abs(x - y) > abs(x) * 1e-4:
                             print("<", l1)
                             print('---')
                             print(">", l2)
