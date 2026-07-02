@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: TopoToolbox/actions/checkout@main
       - name: Build SWT
         run: CFLAGS="-Werror -Wall -Wextra -Wpedantic -Wno-unused-parameter" make
       - name: Run tests
