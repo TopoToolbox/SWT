@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 /*DEFINITIONS*/
 #define MAXCOLUMNS 50000  /*Max number of locations in file*/
@@ -23,13 +24,12 @@
 
 
 /*THE FUNCTION DEFINITIONS*/
-int filter(float distance[], float depth[], float longitude[], float latitude[], float filtered[], char *argv[], int argc, int numberlines);
 int formatarray(float another[]);
 int formatarrayI(int another[]);
 int getlineJH(char line[], FILE *fdata);
 int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
-float quick_select(float arr[], int n);
 int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+float quick_select(float arr[], int n);
 int ReadData (char *argv[], float distance[], float depth[], float longitude[], float latitude[]);
 int tempInterp(float distance[], float depth[], float tempFiltered[],int start,int end);
 int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], int numberlines);
@@ -51,13 +51,11 @@ int main(int argc, char *argv[])
 
 /*Reading the data into arrays*/
 	numberlines = (ReadData(argv, distance, depth, longitude, latitude));
-	/*printf("numberlines %d\n", numberlines);*/
-	printf("Read In The Data\n");
 
 /*Wavelet - Filtering the data*/
-	printf("Commencing Wavelet Filter\n");
+	/*"Commencing Wavelet Filter*/
 	wavelet(distance, depth, argv, numberlines);
-	printf("Done Wavelet Fiter\n");
+	/*"Done Wavelet Fiter*/
 }
 
 
@@ -95,8 +93,6 @@ int getlineJH(char s[], FILE *fdata)
 {
 	int c, i;
 
-/*printf("in getlineJH\n")*/;
-
 	for (i=0; (c=getc(fdata))!=EOF && c!='\n'; ++i)
 		s[i] = c;
 	if (c == '\n')
@@ -106,8 +102,6 @@ int getlineJH(char s[], FILE *fdata)
 	}
 	s[i] = '\0';
 
-/*Is return the last thing that the loop wants to see?*/
-/*printf("got line")*/
 	return i;
 
 }
@@ -127,14 +121,13 @@ int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[]
   /*initialise stuff*/
   gradient = 0;
 
-  printf("\nDoing interpolation.......\n");
+  /*Doing interpolation.......*/
 
   /*Start of by re-setting WavFilt[] to depth[]*/
   /*avoids any carry through errors*/
   for (e = 0; e < numberlines; e++)
     {
       WavFilt[e] = depth[e];
-      /*printf("WavFilt[%d] %f\n",e,WavFilt[e]);*/
     }
 
   /*In the objects, interpolate between the limits*/
@@ -143,10 +136,9 @@ int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[]
       if (WavComb[f] > 0)
 	{
 	  /*Gradient for the line under the object*/
-	  /*printf("Extrapolate under object centred on [%d]\n",f);*/
-	  /*printf("Limits are (%f,%f) (%f,%f)\n",depth[WavCombLeft[f]],distance[WavCombLeft[f]],depth[WavCombRight[f]],distance[WavCombRight[f]]);*/
+	  /*printf("Extrapolate under object centred on f*/
+	  /*Limits depth[WavCombLeft[f]], distance[WavCombLeft[f]], depth[WavCombRight[f]], distance[WavCombRight[f]]);*/
 	  gradient = (depth[WavCombLeft[f]]-depth[WavCombRight[f]])/(distance[WavCombLeft[f]]-distance[WavCombRight[f]]);
-	  /*printf("gradient is %f\n",gradient);*/
 	  /*And do the interpolation*/
 	  for (g = WavCombLeft[f]; g <= WavCombRight[f]; g++)
 	    {
@@ -157,8 +149,6 @@ int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[]
 
 	return 0;
 }
-
-
 
 
 
@@ -199,7 +189,7 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
   float LargestMinGradient;                    /*caps the 'mingradient' that represents the floodplain*/
   float LowestMaxMove;                         /*minimum on this movement restriction because of data density*/
 
-  printf("\nIn Post-Processing .... \n");
+  /*In Post-Processing .... */
 
   widthFract = 0.25;        /*[0.25]amount of width of object upto which it is allowed to search for
 			      increases in area/outline*/
@@ -249,7 +239,6 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	      MaxCoeff = WavComb[h];
 	    }
 	}
-      printf("MaxCoeffLocn %d MaxCoeff %f\n", MaxCoeffLocn, MaxCoeff);
       
       /*so the object I'm going to do is ......*/
       /*f is used for legacy reasons*/
@@ -258,8 +247,7 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
       /*So for this object  ........... */
       
       /*Work out what the initial parameters are*/
-      /*Print some details*/
-      printf("Limits are (%f,%f) (%f,%f)\n",depth[WavCombLeft[f]],distance[WavCombLeft[f]],depth[WavCombRight[f]],distance[WavCombRight[f]]);
+      /*Limits are: depth[WavCombLeft[f]], distance[WavCombLeft[f]], depth[WavCombRight[f]], distance[WavCombRight[f]]*/
       
       /*initialize some properties*/
       outline = 0;
@@ -268,18 +256,16 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
       /*Work out the properties*/
       /*gradient of line under feature*/
       gradient = (depth[WavCombLeft[f]]-depth[WavCombRight[f]])/(distance[WavCombLeft[f]]-distance[WavCombRight[f]]);
-      printf("gradient is %f\n",gradient);
       /*The length of the outline*/
       for (i = WavCombLeft[f];i < WavCombRight[f]; i++)
 	{
 	  /*over the top - use pythag*/
 	  extradist = sqrt(((depth[i]-depth[i+1])*(depth[i]-depth[i+1]))+((distance[i]-distance[i+1])*(distance[i]-distance[i+1])));
 	  outline = outline + extradist;
-	  /*printf("[%d] outline %f extradist %f\n",i, outline, extradist);*/
 	}
       /*and the line underneath - use pythag*/
       outline = outline + sqrt(((depth[WavCombLeft[f]]-depth[WavCombRight[f]])*(depth[WavCombLeft[f]]-depth[WavCombRight[f]]))+((distance[WavCombLeft[f]]-distance[WavCombRight[f]])*(distance[WavCombLeft[f]]-distance[WavCombRight[f]])));
-      printf("[%d] total outline (inc. base) %f \n",f, outline);
+      /*[%d] total outline (inc. base) %f \n",f, outline*/
       /*The area of the feature*/
       /*There is no exception where the measured line crosses the extrapolated*/
       for (j = WavCombLeft[f];j < WavCombRight[f]; j++ )
@@ -288,11 +274,8 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	  depthInterpR = depth[WavCombLeft[f]] + ((distance[j+1]-distance[WavCombLeft[f]])*gradient);
 	  extraarea = 0.5*((depth[j]-depthInterpL) + (depth [j+1] - depthInterpR))*(distance[j+1]-distance[j]);
 	  area = area + extraarea;
-	  /*printf("[%d] area %f extraarea %f\n",j, area, extraarea);*/
 	}
-      printf("[%d] total area %f \n",f, area);
       ratio = area/outline;
-      printf("area/outline %f\n",ratio);
       /*The slope of this intial part, which will remain at the centre of the object when edges expand*/
       /*Calculated from summit to the edges*/
       heightmax = 0;
@@ -307,22 +290,20 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	    }
 	}
       /*fairly crude calculation of the gradients*/
+      /*Summit Location: %f and height %f \n", distance[summitlocation[f]], depth[summitlocation[f]])*/
+      /*Right edge location: %f and height %f \n",distance[WavCombRight[f]], depth[WavCombRight[f]]*/
+      /*Left edge location: %f and height %f \n",distance[WavCombLeft[f]], depth[WavCombLeft[f]]*/
       GradCright =  ((depth[summitlocation[f]])-(depth[WavCombRight[f]]))/((distance[WavCombRight[f]])-(distance[summitlocation[f]]));
       GradCleft= ((depth[summitlocation[f]])-(depth[WavCombLeft[f]]))/((distance[summitlocation[f]])-(distance[WavCombLeft[f]]));
-      GradCentre = (GradCright+GradCleft)/2.0;
-      printf("Summit Location: %f and height %f \n", distance[summitlocation[f]], depth[summitlocation[f]]);
-      printf("Right edge location: %f and height %f \n",distance[WavCombRight[f]], depth[WavCombRight[f]]);
-      printf("Left edge location: %f and height %f \n",distance[WavCombLeft[f]], depth[WavCombLeft[f]]);
-      printf("GradCleft: %f GradCright: %f ",GradCleft, GradCright);
-      printf("Average gradient of core of feature is %f\n", GradCentre);
+      /*Average gradient of core of feature*/
+      GradCentre = (GradCright+GradCleft)/2.0;  
       /*So the minimum gradient allowed at the edges is .....*/
       mingradient = GradCentre*TooFlatFract;
-      printf("So minimum gradient allowed is %f\n", mingradient);
       /*If this minimum is really large, lower it*/
       if (mingradient > LargestMinGradient)
 	{
 	  mingradient = LargestMinGradient;
-	  printf("Really steep middle part, so lowering abysaal plain cut-off gradient to %f\n", LargestMinGradient);
+	  /*Really steep middle part, so lowering abysaal plain cut-off gradient to %f\n", LargestMinGradient*/
 	}
 
       /*Main loop controlling the expanding of the object*/
@@ -332,13 +313,9 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	{
 	  /*reset the number of changes that have happened*/
 	  changes = 0;
-	  printf("\n\nNEW loop changes = %d\n", changes);
-	  
-	  
 	  
 	  /*Try Moving the left hand limit*/
 	  /*Always move on first success*/
-	  printf("Trying to move the left hand limit\n");
 	  loopleft = 1;
 	  moveL = 1;
 	  while (loopleft == 1)
@@ -347,24 +324,19 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	      outline = 0;
 	      area = 0;
 	      
-	      /*Print some details*/
-	      printf("Limits are (%f,%f) (%f,%f)\n",depth[(WavCombLeft[f]-moveL)],distance[(WavCombLeft[f]-moveL)],depth[WavCombRight[f]],distance[WavCombRight[f]]);
-	      
 	      /*Work out the properties*/
 	      /*gradient of line under feature*/
 	      gradient = (depth[(WavCombLeft[f]-moveL)]-depth[WavCombRight[f]])/(distance[(WavCombLeft[f]-moveL)]-distance[WavCombRight[f]]);
-	      printf("gradient is %f\n",gradient);
 	      /*The length of the outline*/
 	      for (i = (WavCombLeft[f]-moveL);i < WavCombRight[f]; i++)
 		{
 		  /*over the top - use pythag*/
 		  extradist = sqrt(((depth[i]-depth[i+1])*(depth[i]-depth[i+1]))+((distance[i]-distance[i+1])*(distance[i]-distance[i+1])));
 		  outline = outline + extradist;
-		  /*printf("[%d] outline %f extradist %f\n",i, outline, extradist);*/
 		}
 	      /*and the line underneath - use pythag*/
 	      outline = outline + sqrt(((depth[(WavCombLeft[f]-moveL)]-depth[WavCombRight[f]])*(depth[(WavCombLeft[f]-moveL)]-depth[WavCombRight[f]]))+((distance[(WavCombLeft[f]-moveL)]-distance[WavCombRight[f]])*(distance[(WavCombLeft[f]-moveL)]-distance[WavCombRight[f]])));
-	      printf("[%d] total outline (inc. base) %f \n",f, outline);
+	      /*[%d] total outline (inc. base) %f \n",f, outline*/
 	      /*The area of the feature*/
 	      /*There is no exception where the measured line crosses the extrapolated*/
 	      for (j = (WavCombLeft[f]-moveL);j < WavCombRight[f]; j++ )
@@ -373,14 +345,11 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 		  depthInterpR = depth[(WavCombLeft[f]-moveL)] + ((distance[j+1]-distance[(WavCombLeft[f]-moveL)])*gradient);
 		  extraarea = 0.5*((depth[j]-depthInterpL) + (depth [j+1] - depthInterpR))*(distance[j+1]-distance[j]);
 		  area = area + extraarea;
-		  /*printf("[%d] area %f extraarea %f\n",j, area, extraarea);*/
 		}
-	      printf("[%d] total area %f \n",f, area);
 	      ratio = area/outline;
-	      printf("area/outline %f\n",ratio);
 	      
-	      /*print current state of movement*/
-	      printf("moveL %d\n", moveL);
+	      /*Current state of movement*/
+	      /*"moveL %d\n", moveL*/
 	      
 	      /*Check that the gradient of the outside portion of the proposed move is not too flat*/
 	      /*Make the proportion with respect to the summit*/
@@ -404,9 +373,9 @@ int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[]
 	      
 	      /*Check that the object hasn't expanded too far*/
 	      TooBig = 0;
-	      printf("proposed left limit: %f\n", distance[WavCombLeft[f] - moveL]);
-	      printf("summit %f km \n", distance[summitlocation[f]]);
-	      printf("size of extension allowed %f km\n", ((WavCombScale[f]/4.0)*ScaleMulLimit) );
+	      /*"proposed left limit: %f\n", distance[WavCombLeft[f] - moveL]*/
+	      /*summit %f km \n", distance[summitlocation[f]]*/
+	      /*"size of extension allowed %f km\n", ((WavCombScale[f]/4.0)*ScaleMulLimit)*/
 	      if (distance[WavCombLeft[f] - moveL] < distance[summitlocation[f]] - ((WavCombScale[f]/4.0)*ScaleMulLimit))
 		{
 		  TooBig = 1;
