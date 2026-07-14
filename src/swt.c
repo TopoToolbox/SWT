@@ -1116,7 +1116,6 @@ int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, f
 	int i, j, k ,l;				/*loop variables*/
 	int before, after;			/*Number position of the points at the
 						start and end of the wavelet*/
-	int toprint;                            /*printing logical variable - debugging*/
 	float BegSum, MidSum, EndSum;		/*weighted averages for the three section of the wavelet*/
 	float BegCount, MidCount, EndCount;	/*count the points for the weighted average*/
 	float BegAv, MidAv, EndAv;              /*the weighted average*/
@@ -1137,18 +1136,11 @@ int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, f
 /*Initialise any variables that obviously aren't in the code anywhere*/
 	Coeff = 0;
 
-	/*printf("wavCompute: Calcuating the wavelet coefficients\n");*/
+	/*Calcuating the wavelet coefficients*/
 
-	printf("numberlines %d\n", numberlines);
 /*Use the i loop to circle through all the points along track in turn*/
 	for(i = 0; i < numberlines; i++)
 	  {
-
-	    /*variable to print out a selected computation*/
-	    toprint = 0;
-	    if (i == 170)
-	      toprint = 0;
-	    /*change toprint to 1 in order to print things to help debugging*/
 
 /*Initialize logical parameters for the requirements at the end of this loop*/
 	    bad = 0;
@@ -1163,23 +1155,12 @@ back a length of half the scale, or hit the begining of the data*/
 	    for(k = i; distance[k] > (distance[i] - (scale/2.0)) && k >= 0; k--)
 	      {
 		before = k;
-		if (toprint == 1)
-		  {
-		    printf("distance[k] %f distance[i] %f scale/2.0 %f\n", distance[k], distance[i], (scale/2.0));
-		    printf("i %d before %d\n", i, before);
-		  }
 	      }
 /*Same but forward*/
 	    for(l = i; distance[l] < (distance[i] + (scale/2.0)) && l < numberlines; l++)
 	      {
 		after = l;
-		if (toprint == 1)
-		  {
-		    printf("distance[l] %f distance[i] %f scale/2.0 %f\n", distance[l], distance[i], (scale/2.0));
-		    printf("i %d after %d\n", i, after);
-		  }
 	      }
-	/*printf("position(i) %d before %d after %d\n", i, before, after);*/
 
 
 /*Work out the weighted average that is the coefficient*/
@@ -1188,13 +1169,10 @@ the three sections independantly -  ungainly though it may seem*/
 	    /*These variables are counts and sums for the 3 parts of the wavelet*/
 		BegCount = 0;
 		BegSum = 0;
-		/*printf("Initial values: BegCount %f beginning %f\n", BegCount, beginning);*/
 		MidCount = 0;
 		MidSum = 0;
-		/*printf("Initial values: MidCount %f middle %f\n", MidCount, middle);*/
 		EndCount = 0;
 		EndSum = 0;
-		/*printf("Initial values: EndCount %f end %f\n", EndCount, end);*/
 		for (j = before; j <= after; j++)
 			{
 /*In the first quarter the weighting is -1.0*/
@@ -1205,12 +1183,6 @@ the three sections independantly -  ungainly though it may seem*/
 					wavWeighting[j] = -1.0;
 					BegCount = BegCount + 1;
 					BegSum = BegSum + depth[j];
-					if (toprint == 1)
-					  {
-					    printf("j %d\n", j);
-					    printf("Beg: wavWeighting[j] %f depth[j] %f\n", wavWeighting[j], depth[j]);
-					    printf("BegCount %f beginning %f\n", BegCount, BegSum);
-					  }
 					}
 /*In the middle half the weighting is 1.0*/
 			if (distance[j] >= (distance[i] - (scale/4.0)))
@@ -1219,12 +1191,6 @@ the three sections independantly -  ungainly though it may seem*/
 					wavWeighting[j] = 1.0;
 					MidCount = MidCount + 1;
 					MidSum = MidSum + depth[j];
-					if (toprint == 1)
-					  {
-					    printf("j %d\n", j);
-					    printf("Mid: wavWeighting[j] %f depth[j] %f\n", wavWeighting[j], depth[j]);
-					    printf("MidCount %f middle %f\n", MidCount, MidSum);
-					  }
 					}
 /*In the third quarter the weighting is -1.0*/
 			if (distance[j] > (distance[i] + (scale/4.0)))
@@ -1233,33 +1199,17 @@ the three sections independantly -  ungainly though it may seem*/
 					wavWeighting[j] = -1.0;
 					EndCount = EndCount + 1;
 					EndSum = EndSum + depth[j];
-					if (toprint == 1)
-					  {
-					    printf("j %d\n", j);
-					    printf("End: wavWeighting[j] %f depth[j] %f\n", wavWeighting[j], depth[j]);
-					    printf("endcount %f end %f\n", EndCount, EndSum);
-					  }
 					}
 			}
 		BegAv = BegSum/BegCount;
 		MidAv = MidSum/MidCount;
 		EndAv = EndSum/EndCount;
-		if (toprint == 1)
-		  {
-		    printf("BegCount %f beginning %f av %f\n", BegCount, BegSum, BegAv);
-		    printf("MidCount %f middle %f av %f\n", MidCount, MidSum, MidAv);
-		    printf("EndCount %f end %f av %f\n", EndCount, EndSum, EndAv);
-		  }
 
 /*Actually work out the weighted average*/
 /*To cope with unequal data density this needs to be done in
 the three sections independantly*/
 /*times 2.0 is so that the middle can cancel out both the beginning and the end*/
 		Coeff = (-1*(BegSum/BegCount)) + ((2.0*MidSum)/MidCount) + (-1*(EndSum/EndCount));
-		if (toprint == 1)
-		  {
-		    printf("Center point of wavelet(distance) %f wavelet coefficient %f\n", distance[i], Coeff);
-		  }
 
 /*Some spatial criteria so that only seamounts are found Book2 pp161-165*/
 /*REQUIRMENT 1: That the edges must be lower than the middle*/
@@ -1269,20 +1219,11 @@ the three sections independantly*/
 			
 			  bad = 1;
 			  Coeff = 0;
-			  if (toprint == 1)
-			    {
-			      printf("SIDE TOO HIGH\n");
-			    }
 			}
 		if(EndAv > MidAv)
 			{
 			  bad = 1;
 			  Coeff = 0;
-			  if (toprint == 1)
-			    {
-			      printf("SIDE TOO HIGH\n");
-			    }
-				
 			}
 
 /*REQUIREMENT 2: That if one side is much lower than the other one with respect to the
@@ -1296,44 +1237,24 @@ then replace reduce the difference and recalculate the magnitude of the coeffici
 /*Set up to get a positive difference if middle is highest*/
 		    diffleft = sqrt((MidAv - BegAv)*(MidAv - BegAv));
 		    diffright = sqrt((MidAv - EndAv)*(MidAv - EndAv));
-		    if (toprint == 1)
-		      {
-			printf("SEEING IF NEED TO ADJUST SIZE OF DIFFERENCES\n");
-			printf("BegAv %f MidAv %f EndAv %f\n",BegAv,MidAv,EndAv);
-			printf("diffleft %f diffright %f \n",diffleft,diffright);
-		      }
+
 		    if (diffleft > (diffFactor*diffright))
 		      {
 			diffleft = diffright*diffFactor;
 			ReqIIrecalc = 1;
-			if (toprint == 1)
-			  {
-			    printf("LEFT adjusted\n");
-			    printf("diffleft %f diffright %f \n",diffleft,diffright);
-			  }
 		      }
 		    if (diffright > (diffFactor*diffleft))
 		      {
 			ReqIIrecalc = 1;
 			diffright = diffleft*diffFactor;
-			if (toprint == 1)
-			  {
-			    printf("RIGHT adjusted\n");
-			    printf("diffleft %f diffright %f \n",diffleft,diffright);
-			  }
 		      }
 		    /*If required recalculate the coefficient*/
 		    /*but only if it hasn't been set to zero in REQUIREMENT 1*/
 		    if (ReqIIrecalc == 1 && bad == 0)
 		      {
-			/*printf("Recalculating Coefficient in REQUIREMENT 2\n");*/
+			/*Recalculating Coefficient in REQUIREMENT 2*/
 			/*NOTE: this calculation is equivalent to the one above*/
 			Coeff = (diffright + diffleft);
-			if (toprint == 1)
-			  {
-			    printf("Recalculating coeff\n");
-			    printf("Coeff %f \n",Coeff);
-			  }
 		      }
 		  }
 
