@@ -3,3 +3,5 @@ test/*.out
 *.temp
 swt
 find_seamounts
+output.txt
+seamounts_output.txt
