@@ -27,16 +27,16 @@
 int formatarray(float another[]);
 int formatarrayI(int another[]);
 int getlineJH(char line[], FILE *fdata);
-int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
-int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
 float quick_select(float arr[], int n);
 int ReadData (char *argv[], float distance[], float depth[], float longitude[], float latitude[]);
 int tempInterp(float distance[], float depth[], float tempFiltered[],int start,int end);
-int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], int numberlines);
-int wavInterpii(float WavCoeff[], int numberlines, float CoeffThreshold, float distance[], float scale);
-int wavInterpComb(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
-int wavInterpCombii(char *argv[], float WavComb[], int numberlines, float distance[], float WavCombScale[], float ScaleInteract);
-int wavelet(float distance[], float depth[], char *argv[], int numberlines);
+int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], ptrdiff_t numberlines);
+int wavInterpii(float WavCoeff[], ptrdiff_t numberlines, float CoeffThreshold, float distance[], float scale);
+int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float distance[], float WavCombScale[], float ScaleInteract);
+int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines);
 
 
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 	float depth[MAXCOLUMNS];
 	float longitude[MAXCOLUMNS];
 	float latitude[MAXCOLUMNS];
-	int numberlines;
+	ptrdiff_t numberlines;
 
 /*Reading the data into arrays*/
 	numberlines = (ReadData(argv, distance, depth, longitude, latitude));
@@ -111,7 +111,7 @@ int getlineJH(char s[], FILE *fdata)
 /*INTERPOLATE*/
 /*Interpolate: Takes the limits of the objects e.g. from WavCombLeft[] 
 and creates a filtered value.*/
-int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
 
 {
   int e,f,g;		/*loop variable*/
@@ -154,7 +154,7 @@ int Interpolate(float WavComb[], int numberlines, float WavFilt[], float depth[]
 
 /*POSTPROCESS*/
 /*PostProcess: Second generation of post processing routine*/
-int PostProcess(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
 
 {
   int b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
@@ -901,7 +901,7 @@ Optional inclusion of shape checking of objects found at each scale before
 their inclusion into the interpretation*/
 /*NOTE: this is not true wavelet work, more a nice easy bastardisation that
 I can understand and program*/
-int wavelet(float distance[], float depth[], char *argv[], int numberlines)
+int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines)
 
 {
 	float WavFilt[MAXCOLUMNS];	/*The array to hold the output filtered points*/
@@ -1063,7 +1063,7 @@ int wavelet(float distance[], float depth[], char *argv[], int numberlines)
 /*WAV_COMPUTE*/
 /*wavCompute: For every point along a profile calculates a weighted average
 according to my origional wavelet*/
-int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], int numberlines)
+int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], ptrdiff_t numberlines)
 
 {
 
@@ -1228,7 +1228,7 @@ then replace reduce the difference and recalculate the magnitude of the coeffici
 /*WAV_INTERPRET II*/
 /*wavInterp: For one scale gets the array of raw coefficients and decides
 where the objets are.  Changed to a slower but robust method*/
-int wavInterpii(float WavCoeff[], int numberlines, float CoeffThreshold, float distance[], float scale)
+int wavInterpii(float WavCoeff[], ptrdiff_t numberlines, float CoeffThreshold, float distance[], float scale)
 
 {
   int j, k, l;	/*loop variables*/
@@ -1282,7 +1282,7 @@ for (j = 0; j < numberlines; j++)
 /*wavInterpComb: Finds the limits of the objects, and creates a filtered value.
 My initial go at this will just be to find the non-zero patches of
 WavComb*/
-int wavInterpComb(float WavComb[], int numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
 
 {
   int a,b,c,d,e,f,g,k,h,i,j;		/*loop variable*/
@@ -1437,7 +1437,7 @@ int wavInterpComb(float WavComb[], int numberlines, float WavFilt[], float depth
 
 /*WAV_INTERP_COMINE II*/
 /*wavInterpCombii: combines information previously printed to file*/
-int wavInterpCombii(char *argv[], float WavComb[], int numberlines, float distance[], float WavCombScale[], float ScaleInteract)
+int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float distance[], float WavCombScale[], float ScaleInteract)
 
 {
   int a,b,c,d,e;		/*loop variables*/
