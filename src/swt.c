@@ -1451,8 +1451,6 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
   float Arr2[MAXCOLUMNS];
   float Arr3[MAXCOLUMNS];
 
-  float wide, narrow;
-
   /*Open the file for reading*/
   fdata = fopen (argv [3], "r");
 
