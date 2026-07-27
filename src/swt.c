@@ -36,6 +36,7 @@ int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, f
 int wavInterpii(float WavCoeff[], ptrdiff_t numberlines, float CoeffThreshold, float distance[], float scale);
 int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[]);
 int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float distance[], float WavCombScale[], float ScaleInteract);
+int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float WavCombScale[], ptrdiff_t Arr1[], float Arr2[], float Arr3[] );
 int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines);
 
 
@@ -1441,7 +1442,6 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float distance[], float WavCombScale[], float ScaleInteract)
 
 {
-  int a,b,c,d,e;		/*loop variables*/
   int len;
   int linenum;
   char line[MAXLINE];
@@ -1450,24 +1450,11 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
   ptrdiff_t Arr1[MAXCOLUMNS];       /*arrays to read the file into - local*/
   float Arr2[MAXCOLUMNS];
   float Arr3[MAXCOLUMNS];
-  float distdiff;           /*distance between 2 coefficients*/
-  int Rlogic;     /*whether or not the scales interract*/
-  /*difference in the scales between 2 coefficients now in as ScaleInteract*/
-  float PairFlatnessFactor;
-  FILE *fouttemp;
-  FILE *fouttempB;
-  float FlatnessFactor;      /*factor to determine what is too flat*/
-  float FlatnessCoeffFactor; /*factor within which wavelet coeffs must be for pointiness to come into play*/
-  float wide, narrow;
 
-  /*As well as ScaleInteract, take out large features if excessively flat*/
-  FlatnessFactor = 3.0;          /*smaller object has to be more than this many times pointier*/
-  FlatnessCoeffFactor = 4.0;     /*if the smaller one has a coefficient within this multiple, it can take it out */
+  float wide, narrow;
 
   /*Open the file for reading*/
   fdata = fopen (argv [3], "r");
-  fouttemp = fopen ("look.temp", "w");
-  fouttempB = fopen ("lookB.temp", "w");
 
   formatarrayI(Arr1);
   formatarray(Arr2);
@@ -1486,6 +1473,34 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
     }
 
   fclose (fdata);
+
+/*Add inner function here*/
+
+  wavInterpCombii_inner(linenum, WavComb, distance, WavCombScale, Arr1, Arr2, Arr3);
+
+	return 0;
+}
+
+
+/*WAV_INTERP_COMINE II - inner function*/
+int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float WavCombScale[], ptrdiff_t Arr1[], float Arr2[], float Arr3[])
+
+{
+  int Rlogic;     /*whether or not the scales interract*/
+  ptrdiff_t a,b,c,e;		/*loop variables*/
+  float FlatnessFactor;      /*factor to determine what is too flat*/
+  float FlatnessCoeffFactor; /*factor within which wavelet coeffs must be for pointiness to come into play*/
+   float distdiff;           /*distance between 2 coefficients*/
+  /*difference in the scales between 2 coefficients now in as ScaleInteract*/
+  float PairFlatnessFactor;
+  float wide, narrow;
+  
+
+  /*As well as ScaleInteract, take out large features if excessively flat*/
+  FlatnessFactor = 3.0;          /*smaller object has to be more than this many times pointier*/
+  FlatnessCoeffFactor = 4.0;     /*if the smaller one has a coefficient within this multiple, it can take it out */
+  
+  
 
   /*Now go through the arrays and sort out which points should be eliminated*/
   /*Go in reverse order through the array so that i'm taking the largest scale first*/
@@ -1552,19 +1567,6 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
 	}
     }	
 
-  /*See what this has done*/
-  for (d = 0; d < linenum; d++)
-    {
-      if (Arr3[d] > 0)
-	{
-	  fprintf(fouttemp, "%f %f %f \n",distance[Arr1[d]],Arr2[d],Arr3[d]);
-	}
-    }
-   
-  
-  
-
-
   /*Write the remaining data into WavComb[] and WavCombScale[]*/
   for (e = 0; e < linenum; e++)
     {
@@ -1575,14 +1577,9 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
 	}
     }
 
-
-  fclose (fouttemp);
-  fclose (fouttempB);
-
 	return 0;
+
 }
-
-
 
 
 
