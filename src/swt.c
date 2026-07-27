@@ -25,16 +25,16 @@
 
 /*THE FUNCTION DEFINITIONS*/
 int formatarray(float another[]);
-int formatarrayI(int another[]);
+int formatarrayI(ptrdiff_t another[]);
 int getlineJH(char line[], FILE *fdata);
-int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
-int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[]);
+int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[]);
 float quick_select(float arr[], int n);
 int ReadData (char *argv[], float distance[], float depth[], float longitude[], float latitude[]);
 int tempInterp(float distance[], float depth[], float tempFiltered[],int start,int end);
 int wavCompute(float distance[], float depth[], float WavCoeff[], float scale, float wavWeighting[], ptrdiff_t numberlines);
 int wavInterpii(float WavCoeff[], ptrdiff_t numberlines, float CoeffThreshold, float distance[], float scale);
-int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[]);
+int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[]);
 int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float distance[], float WavCombScale[], float ScaleInteract);
 int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines);
 
@@ -73,12 +73,13 @@ int formatarray(float another[])
 	return 0;
 }
 
+
 /*FORMATARRAYI*/
 /*formatarrayI: formats an array ready to be read into*/
-int formatarrayI(int another[])
+int formatarrayI(ptrdiff_t another[])
 
 {
-        int i;
+         ptrdiff_t i;
 	/*'<' is there as arrays start at [0]*/
 	for (i = 0; i < MAXCOLUMNS; i++)
                 another[i] = 0;
@@ -111,7 +112,7 @@ int getlineJH(char s[], FILE *fdata)
 /*INTERPOLATE*/
 /*Interpolate: Takes the limits of the objects e.g. from WavCombLeft[] 
 and creates a filtered value.*/
-int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
   int e,f,g;		/*loop variable*/
@@ -154,7 +155,7 @@ int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 
 /*POSTPROCESS*/
 /*PostProcess: Second generation of post processing routine*/
-int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
   int b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
@@ -174,7 +175,7 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
   int ObjectsCount;               /*How many object are there still to do*/
   int criteriaFulfilled;
   float widthFract, MoveMax, Move;
-  int summitlocation[MAXCOLUMNS];   /*Array containing the summit locations of the features
+  ptrdiff_t summitlocation[MAXCOLUMNS];   /*Array containing the summit locations of the features
 				      as this is not necessarily where the max coeff is located*/
   float GradCentre, GradCleft, GradCright;    /*variables for computation of the slope-based restriction*/
   float height, heightmax, depthInterp; 
@@ -536,8 +537,8 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 		  InsidePosnRHS--;
 		}
 	      RHSgradient = (depth[InsidePosnRHS]-depth[(WavCombRight[f] + moveR)])/(distance[(WavCombRight[f] + moveR)]-distance[InsidePosnRHS]);
-	      printf("Summit location: %d\n", summitlocation[f]);
-	      printf("WavCombRight[%d] %d InsidePosnRHS: %d RHSgradient %f \n",f,WavCombRight[f]+moveR,InsidePosnRHS, RHSgradient);
+	      printf("Summit location: %td\n", summitlocation[f]);
+	      printf("WavCombRight[%d] %td InsidePosnRHS: %d RHSgradient %f \n",f,WavCombRight[f]+moveR,InsidePosnRHS, RHSgradient);
 
 	      /*Make sure that the object hasn't expanded too much*/
 	      TooBig = 0;
@@ -907,8 +908,8 @@ int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines
 	float WavFilt[MAXCOLUMNS];	/*The array to hold the output filtered points*/
 	float WavComb[MAXCOLUMNS];	/*Holds the max approved coeffs from across the scales*/
 	float WavCombScale[MAXCOLUMNS];	/*Holds the scale at which the coeffs above come from*/
-	int WavCombLeft[MAXCOLUMNS];    /*Holds the array element of the left hand side extremity of each feature*/
-	int WavCombRight[MAXCOLUMNS];   /*Holds the array element of the right hand side extremity of each feature*/
+	ptrdiff_t WavCombLeft[MAXCOLUMNS];    /*Holds the array element of the left hand side extremity of each feature*/
+	ptrdiff_t WavCombRight[MAXCOLUMNS];   /*Holds the array element of the right hand side extremity of each feature*/
 
 	float WavCoeff[MAXCOLUMNS];	/*Coeffs of wavelet transform at a given scale*/
 	float WavWeighting[MAXCOLUMNS];	/*holds the weighting for the wavCompute
@@ -1282,7 +1283,7 @@ for (j = 0; j < numberlines; j++)
 /*wavInterpComb: Finds the limits of the objects, and creates a filtered value.
 My initial go at this will just be to find the non-zero patches of
 WavComb*/
-int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], int WavCombLeft[], int WavCombRight[])
+int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
   int a,b,c,d,e,f,g,k,h,i,j;		/*loop variable*/
@@ -1446,7 +1447,7 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
   char line[MAXLINE];
   float column1, column2, column3;
   FILE *fdata;		/*Interpreted Coefficients file - objects as selected max coeff, all scales sequentially*/
-  int Arr1[MAXCOLUMNS];       /*arrays to read the file into - local*/
+  ptrdiff_t Arr1[MAXCOLUMNS];       /*arrays to read the file into - local*/
   float Arr2[MAXCOLUMNS];
   float Arr3[MAXCOLUMNS];
   float distdiff;           /*distance between 2 coefficients*/
