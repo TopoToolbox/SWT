@@ -854,7 +854,7 @@ int ReadData (char *argv[], float distance[], float depth[], float longitude[], 
 
 {
 	int len;
-	int countlines;
+	ptrdiff_t countlines;
 	char line[MAXLINE];
 	float column1, column2, column3, column4;
 
@@ -874,10 +874,9 @@ int ReadData (char *argv[], float distance[], float depth[], float longitude[], 
 /*Reads 2 columns distance along track and depth*/
                   sscanf(line, "%f %f %f %f", &column1, &column2, &column3, &column4);
 /* x,z in meters*/
-/*printf("In main while,%f %f\n", column1, column2);*/
 		distance[countlines] = column1;
 		depth[countlines] = column2;
-		/*printf("%f %f %d\n",  distance[countlines], depth[countlines],countlines);*/
+		/*("%f %f %d\n",  distance[countlines], depth[countlines],countlines);*/
 		longitude[countlines] = column3;
 		latitude[countlines] = column4;
 		/*Read these in, although they're not used anywhere*/
@@ -885,8 +884,8 @@ int ReadData (char *argv[], float distance[], float depth[], float longitude[], 
 		countlines++;
 		}
 
-	/*printf("distance[0] %f\n", distance[0]);
-	  printf("distance[MAXCOLUMNS -1] %f\n", distance[MAXCOLUMNS -1]);*/
+	/*"(distance[0] %f\n", distance[0]);
+	  "(distance[MAXCOLUMNS -1] %f\n", distance[MAXCOLUMNS -1]);*/
 
 	fclose (fdata);
 
