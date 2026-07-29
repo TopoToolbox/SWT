@@ -1003,8 +1003,7 @@ int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines
 
 
 	
-	/*Combine the locations of objects across the scale*/
-	printf("Combining information from all the scales........\n");
+	/*Combine the locations of objects across the scales*/
 	wavInterpCombii(argv, WavComb, numberlines, distance, WavCombScale, ScaleInteract);
 
 	/*The final product of wavInterpCombii - send to file*/
@@ -1286,7 +1285,7 @@ WavComb*/
 int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
-  int a,b,c,d,e,f,g,k,h,i,j;		/*loop variable*/
+  ptrdiff_t a,b,c,d,e,f,g,k,h,i,j;		/*loop variable*/
   float gradient;		/*used in the linear interpolation of the space under objects*/
   float area, outline;          /*properties of the feature*/
   float extradist, extraarea;
@@ -1298,22 +1297,21 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
   gradient = 0;
   countobjects = 0;
 
-  printf("Finding the limits of the objects\n");
   /*Find the limits of the objects - store the location at the limit of the feature*/
   /*i.e. where height of the feature is zero*/
   /*NOTE: there can be no overlap at this stage*/
   for (k = 0; k < numberlines; k++)
     {
-      /*printf("WavComb[%d] %f\n",k, WavComb[k]);*/
+      /*("WavComb[%d] %f\n",k, WavComb[k])*/
       if (WavComb[k] > 0)
 	{
 	  countobjects++;
 	  /*Find the left hand side limit*/
 	  for (a = k; a >=0 && distance[a] > distance[k] - (WavCombScale[k]/4.0); a--)
 	    {
-	      /*printf("Scale/4: %f\n",(WavCombScale[k]/4.0));*/
+	      /*("Scale/4: %f\n",(WavCombScale[k]/4.0))*/
 	      WavCombLeft[k] = a;
-	      /*printf("Distance of left limit [%d]: %f\n",a,distance[a]);*/
+	      /*("Distance of left limit [%d]: %f\n",a,distance[a])*/
 	    }
 	  /*If the lhs hasn't moved, move it by one as this must be OK if a coefficient can be calcuated*/
 	  if (WavCombLeft[k] == k)
@@ -1323,23 +1321,23 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 	  /*Find the right hand side limit*/
 	  for (b = k; b < numberlines && distance[b] < distance[k] + (WavCombScale[k]/4.0); b++)
 	    {
-	      /*printf("Scale/4: %f\n",(WavCombScale[k]/4.0));*/
+	      /*("Scale/4: %f\n",(WavCombScale[k]/4.0))*/
 	      WavCombRight[k] = b;
-	      /*printf("Distance of right limit[%d]: %f\n",b, distance[b]);*/
+	      /*("Distance of right limit[%d]: %f\n",b, distance[b])*/
 	    }
 	  /*If the rhs hasn't moved, move it by one as this must be OK if a coefficient can be calcuated*/
 	  if (WavCombRight[k] == k)
 	    {
 	      WavCombRight[k]++;
 	    }
-	  /*printf("Left limit: %d, %f km\n", WavCombLeft[k], distance[WavCombLeft[k]]);*/
-	  /*printf("Right limit: %d, %f km\n",WavCombRight[k], distance[WavCombRight[k]]);*/
+	  /*("Left limit: %d, %f km\n", WavCombLeft[k], distance[WavCombLeft[k]])*/
+	  /*("Right limit: %d, %f km\n",WavCombRight[k], distance[WavCombRight[k]])*/
 	}
     }
-  printf("No. OBJECTS is %d \n\n", countobjects);
+  /*("No. OBJECTS is %d \n\n", countobjects)*/
 
 
-  printf("Double-check that there is no overlap\n");
+  /*("Double-check that there is no overlap\n")*/
   /*For each of the non-zero coefficients indicating an object ........*/
   for (c = 0; c < numberlines; c++)
     {
@@ -1351,16 +1349,16 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 	      /*And flag if any other left hand limit is between the limits for this object*/
 	      if (WavCombLeft[d] >= WavCombLeft[c] && WavCombLeft[d] <= WavCombRight[c] && WavComb[d] > 0 && d != c)
 		{
-		  printf("WARNING - whilst centre points not in each other's ranges, ranges overlap\n");
-		  printf("Left limit located at [%d] is inside limits of object at [%d]\n",d,c);
-		  printf("%f (lhs of right object) %f (rhs of left object)\n", distance[WavCombLeft[d]], distance[WavCombRight[c]]);
+		  /*("WARNING - whilst centre points not in each other's ranges, ranges overlap\n")*/
+		  /*("Left limit located at [%d] is inside limits of object at [%d]\n",d,c)*/
+		  /*("%f (lhs of right object) %f (rhs of left object)\n", distance[WavCombLeft[d]], distance[WavCombRight[c]])*/
 		}
 	      /*And flag if any other right hand limit is between the limits for this object*/
 	      if (WavCombRight[d] >= WavCombLeft[c] && WavCombRight[d] <= WavCombRight[c] && WavComb[d] > 0 && d != c)
 		{
-		  printf("WARNING - whilst centre points not in each other's ranges, ranges overlap\n");
-		  printf("Right limit located at [%d] is inside limits of object at [%d]\n",d,c);
-		  printf("%f (rhs of left object) %f (lhs of right object)\n", distance[WavCombRight[d]], distance[WavCombLeft[c]]);
+		  /*("WARNING - whilst centre points not in each other's ranges, ranges overlap\n")*/
+		  /*("Right limit located at [%d] is inside limits of object at [%d]\n",d,c)*/
+		  /*("%f (rhs of left object) %f (lhs of right object)\n", distance[WavCombRight[d]], distance[WavCombLeft[c]])*/
 		}
 	    }
 
@@ -1369,13 +1367,13 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 
  
 
-  printf("\nDoing initial interpolation.......\n");
+  /*("\nDoing initial interpolation.......\n")*/
 
   /*Start of by setting WavFilt[] to depth[]*/
   for (e = 0; e < numberlines; e++)
     {
       WavFilt[e] = depth[e];
-      /*printf("WavFilt[%d] %f\n",e,WavFilt[e]);*/
+      /*("WavFilt[%d] %f\n",e,WavFilt[e]);*/
     }
 
   /*In the objects, interpolate between the limits*/
@@ -1384,10 +1382,10 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
       if (WavComb[f] > 0)
 	{
 	  /*Gradient for the line under the object*/
-	  /*printf("Extrapolate under object centred on [%d]\n",f);*/
-	  /*printf("Limits are (%f,%f) (%f,%f)\n",depth[WavCombLeft[f]],distance[WavCombLeft[f]],depth[WavCombRight[f]],distance[WavCombRight[f]]);*/
+	  /*("Extrapolate under object centred on [%d]\n",f);*/
+	  /*("Limits are (%f,%f) (%f,%f)\n",depth[WavCombLeft[f]],distance[WavCombLeft[f]],depth[WavCombRight[f]],distance[WavCombRight[f]]);*/
 	  gradient = (depth[WavCombLeft[f]]-depth[WavCombRight[f]])/(distance[WavCombLeft[f]]-distance[WavCombRight[f]]);
-	  /*printf("gradient is %f\n",gradient);*/
+	  /*("gradient is %f\n",gradient);*/
 	  /*And do the interpolation*/
 	  for (g = WavCombLeft[f]; g <= WavCombRight[f]; g++)
 	    {
@@ -1396,7 +1394,7 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 	}
     }
 
-  printf("Calculating properties of the object\n");
+  /*("Calculating properties of the object\n");*/
   /*In the objects, interpolate between the limits*/
   for (h = 0; h < numberlines; h++)
     {
@@ -1411,11 +1409,11 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 	      /*over the top - use pythag*/
 	      extradist = sqrt(((depth[i]-depth[i+1])*(depth[i]-depth[i+1]))+((distance[i]-distance[i+1])*(distance[i]-distance[i+1])));
 	      outline = outline + extradist;
-	      /*printf("[%d] outline %f extradist %f\n",i, outline, extradist);*/
+	      /*("[%d] outline %f extradist %f\n",i, outline, extradist);*/
 	    }
 	  /*and the line underneath - use pythag*/
 	  outline = outline + sqrt(((depth[WavCombLeft[h]]-depth[WavCombRight[h]])*(depth[WavCombLeft[h]]-depth[WavCombRight[h]]))+((distance[WavCombLeft[h]]-distance[WavCombRight[h]])*(distance[WavCombLeft[h]]-distance[WavCombRight[h]])));
-	  printf("[%d] total outline (inc. base) %f \n",i, outline);
+	  /*("[%d] total outline (inc. base) %f \n",i, outline);*/
 	  /*The area of the feature*/
 	  /*There is no exception where the measured line crosses the extrapolated*/
 	  for (j = WavCombLeft[h];j < WavCombRight[h]; j++ )
@@ -1424,11 +1422,11 @@ int wavInterpComb(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float
 	      depthInterpR = depth[WavCombLeft[h]] + ((distance[j+1]-distance[WavCombLeft[h]])*gradient);
 	      extraarea = 0.5*((depth[j]-depthInterpL) + (depth [j+1] - depthInterpR))*(distance[j+1]-distance[j]);
 	      area = area + extraarea;
-	      /*printf("[%d] area %f extraarea %f\n",j, area, extraarea);*/
+	      /*("[%d] area %f extraarea %f\n",j, area, extraarea);*/
 	    }
-	  printf("[%d] total area %f \n",j, area);
+	  /*printf("[%d] total area %f \n",j, area);*/
 	  ratio = area/outline;
-	  printf("area/outline %f\n",ratio);
+	  /*printf("area/outline %f\n",ratio);*/
 	}
     }
 
@@ -1442,7 +1440,7 @@ int wavInterpCombii(char *argv[], float WavComb[], ptrdiff_t numberlines, float 
 
 {
   int len;
-  int linenum;
+  ptrdiff_t linenum;
   char line[MAXLINE];
   float column1, column2, column3;
   FILE *fdata;		/*Interpreted Coefficients file - objects as selected max coeff, all scales sequentially*/
@@ -1503,7 +1501,7 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
   /*Go in reverse order through the array so that i'm taking the largest scale first*/
   for (a = linenum -1; a >= 0; a--)
     {
-      /*printf("Coeff to check: %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a]);*/
+      /*("Coeff to check: %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a]);*/
       /*For each coefficient [a] remove it if it has a smaller coefficient than anything within its range*/
       for (b = 0; b < linenum && Arr3[a] != 0; b++)
 	{
@@ -1512,14 +1510,14 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
 	  if (distdiff < Arr2[a]/4.0)
 	    {
 	      Rlogic = 1;
-	      /*printf("Within range\n");*/
+	      /*("Within range\n");*/
 	    }
 	  /*Now see if [a] should be eliminated by .....*/
 	  /*1) Something thinner having a larger coefficient*/
 	  if (Arr3[a] < Arr3[b] && Rlogic == 1 && a != b)
 	    {
-	      /*printf("%f %f %f vs %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a], distance[Arr1[b]], Arr2[b], Arr3[b]);*/
-	      /*printf("coeff[a] %f is a smaller coeff than [b] %f \n\n", Arr3[a], Arr3[b]);*/
+	      /*("%f %f %f vs %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a], distance[Arr1[b]], Arr2[b], Arr3[b]);*/
+	      /*("coeff[a] %f is a smaller coeff than [b] %f \n\n", Arr3[a], Arr3[b]);*/
 	      Arr3[a] = 0;
 	    }
 	  /*2) Something thinner being a decent size (e.g. 1/4 of coeff of larger scale) and substantially pointier*/
@@ -1531,8 +1529,8 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
 	  if (Arr3[a] != 0 && Arr3[a] < ((Arr3[b])*FlatnessCoeffFactor) && Rlogic == 1 && a != b && PairFlatnessFactor > FlatnessFactor)
 	    {
 	      Arr3[a] = 0;
-	      /*printf("[a] eliminated by small and pointy\n");
-		printf("PairFlatnessFactor %f\n", PairFlatnessFactor);*/
+	      /*("[a] eliminated by small and pointy\n");
+		("PairFlatnessFactor %f\n", PairFlatnessFactor);*/
 	    }
 	}
 
@@ -1541,7 +1539,7 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
       /*If [a] is not to be eliminated, do some elimination*/
       if (Arr3[a] > 0)
 	{
-	  /*printf("NOT ELIMINATED %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a]);*/
+	  /*("NOT ELIMINATED %f %f %f\n", distance[Arr1[a]], Arr2[a], Arr3[a]);*/
 	  for (c = 0; c < linenum; c++)
 	    {
 	      Rlogic = 0;
@@ -1549,7 +1547,7 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
 	      if (distdiff < Arr2[a]/4.0)
 		{
 		  Rlogic = 1;
-		  /*printf("In Range: %f %f %f\n",distance[Arr1[c]], Arr2[c], Arr3[c]);*/
+		  /*("In Range: %f %f %f\n",distance[Arr1[c]], Arr2[c], Arr3[c]);*/
 		}
 	      /*Now, given the previous logic [c] should be eliminated if*/
 	      /*in range with a smaller coefficient*/
@@ -1558,7 +1556,7 @@ int wavInterpCombii_inner(int linenum, float WavComb[], float distance[], float 
 	      if (Arr3[a] > Arr3[c] && a != c && Rlogic == 1 && Arr3[c] > 0)
 		{
 		  Arr3[c] = 0;
-		  /*printf("And eliminate\n");*/
+		  /*("And eliminate\n");*/
 		}
 	    }
 	}
