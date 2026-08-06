@@ -160,20 +160,20 @@ int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
-  int b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
+  ptrdiff_t b,c,d,e,f,h,i,j,k,l,m;		/*loop variables*/
   float gradient;		/*used in the linear interpolation of the space under objects*/
   float area, outline;          /*properties of the feature*/
   float extradist, extraarea;
   float ratio;        /*ratio: outline length / Area */
   float depthInterpL, depthInterpR;    /*interpolated depths used in calculations*/
   float maxratio;         /*'success parameters' driving the routine*/
-  int moveL, moveR;           /*number of data points to the left to try to shift the left hand edge*/
+  ptrdiff_t moveL, moveR;           /*number of data points to the left to try to shift the left hand edge*/
   int loopleft, loopright;        /*loop logical variable*/
   int mainloop, changes;          /*logic variable for the main loop and number of changes*/
   float objToDo[MAXCOLUMNS];      /*Array 1 = to do, 0 = done*/
   int loopobjects;                /*logic in the loop controlling the object that is being done*/
   float MaxCoeff;
-  int MaxCoeffLocn;             /*location of max remaining coefficient*/
+  ptrdiff_t MaxCoeffLocn;             /*location of max remaining coefficient*/
   int ObjectsCount;               /*How many object are there still to do*/
   int criteriaFulfilled;
   float widthFract, MoveMax, Move;
@@ -183,7 +183,7 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
   float height, heightmax, depthInterp; 
   float mingradient, RHSgradient, LHSgradient;   /*gradients of the extremities and their minimum allowed value*/
   float summitToEdge;
-  int InsidePosnLHS, InsidePosnRHS;
+  ptrdiff_t InsidePosnLHS, InsidePosnRHS;
   float outsideFract, TooFlatFract;           /*user-set geometric parameters for the slope based restriction*/
   float HeightDiffFract, ScaleMulLimit;       /*more user set parameters for real data*/
   int TooBig, TooDeep;                                 /*variable associated with ScaleMulLimit*/
