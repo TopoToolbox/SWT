@@ -93,7 +93,8 @@ int formatarrayI(ptrdiff_t another[])
 int getlineJH(char s[], FILE *fdata)
 
 {
-	int c, i;
+	int c;
+	ptrdiff_t i;
 
 	for (i=0; (c=getc(fdata))!=EOF && c!='\n'; ++i)
 		s[i] = c;
@@ -116,7 +117,7 @@ and creates a filtered value.*/
 int Interpolate(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float depth[], float distance[], float WavCombScale[], ptrdiff_t WavCombLeft[], ptrdiff_t WavCombRight[])
 
 {
-  int e,f,g;		/*loop variable*/
+  ptrdiff_t e,f,g;		/*loop variable*/
   float gradient;		/*used in the linear interpolation of the space under objects*/
   
 
@@ -425,7 +426,7 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 	      if (WavCombLeft[f] - (moveL +1) < 0)
 		{
 		  criteriaFulfilled = 0;
-		  printf("FAIL 1: Tries to move outside data\n");
+		  /*("FAIL 1: Tries to move outside data\n");*/
 		}
 	      /*Criterion 2*/
 	      /*Version from Book16p26*/
@@ -454,7 +455,7 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 		      /*is between the limits of a larger object - in terms of its original coefficient*/
 		      if ((WavCombLeft[f]-(moveL+1)) < WavCombRight[c] && (WavCombLeft[f]-(moveL+1)) > WavCombLeft[c] && WavComb[c] > WavComb[f])
 			{
-			  /*printf("FAIL 3: Tries to move inside other larger object*/
+			  /*("FAIL 3: Tries to move inside other larger object*/
 			  criteriaFulfilled = 0;
 			}
 		    }
@@ -538,8 +539,8 @@ int PostProcess(float WavComb[], ptrdiff_t numberlines, float WavFilt[], float d
 		  InsidePosnRHS--;
 		}
 	      RHSgradient = (depth[InsidePosnRHS]-depth[(WavCombRight[f] + moveR)])/(distance[(WavCombRight[f] + moveR)]-distance[InsidePosnRHS]);
-	      printf("Summit location: %td\n", summitlocation[f]);
-	      printf("WavCombRight[%d] %td InsidePosnRHS: %d RHSgradient %f \n",f,WavCombRight[f]+moveR,InsidePosnRHS, RHSgradient);
+	      /*("Summit location: %td\n", summitlocation[f]);*/
+	      /*("WavCombRight[%d] %td InsidePosnRHS: %d RHSgradient %f \n",f,WavCombRight[f]+moveR,InsidePosnRHS, RHSgradient);*/
 
 	      /*Make sure that the object hasn't expanded too much*/
 	      TooBig = 0;
@@ -1018,7 +1019,7 @@ int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines
 
 /*Turn the coefficients into a regional by finding the objects and doing linear
  interpolation between their limits*/
- printf("\nCreating a regional filter from the objects at all scales\n");
+ /*("\nCreating a regional filter from the objects at all scales\n");*/
  wavInterpComb(WavComb, numberlines, WavFilt, depth, distance, WavCombScale, WavCombRight, WavCombLeft);
 
 /*Do the second stage of processing - finding the exact limits of the objects*/
@@ -1027,15 +1028,6 @@ int wavelet(float distance[], float depth[], char *argv[], ptrdiff_t numberlines
  /*Re-interpolate underneath the objects*/
  Interpolate(WavComb, numberlines, WavFilt, depth, distance, WavCombScale, WavCombRight, WavCombLeft);
 
-
-
-/*Got the blocked objects, now do some post processing to make their limits astetically acceptable*/
-/*Firstly sort out any times when the cf pp 178 Book 2*/
-     /*WavPostPro(distance, depth, WavFilt, WavComb, numberlines, CoeffThreshold, WavCombScale);*/
-     /*WavPostProii(distance, depth, WavFilt, WavComb, numberlines, CoeffThreshold, WavCombScale, ScaleInteract);*/
-     /*WavPostPro(distance, depth, WavFilt, WavComb, numberlines, CoeffThreshold, WavCombScale);*/
-
-/*Do I need to use WavPostPro again to check that WavPostProii hasn't messed it up????????????*/
 /*And send Filtered to file*/
 		for(l = 0; l < numberlines; l++)
 			fprintf(fwavFilt, "%f %f %f\n", distance[l], depth[l], WavFilt[l]);
